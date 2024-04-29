@@ -224,6 +224,7 @@ Start() {
 			do_install_basic_dep
 			do_config_mtp
 			do_install
+			run_mtp
 		fi
 		
 		if [ ${input_provider} == 8 ]; then
