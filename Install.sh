@@ -168,6 +168,30 @@ do_install() {
     fi
 
 }
+function is_running_mtp() {
+    if [ -f $pid_file ]; then
+
+        if is_pid_exists $(cat $pid_file); then
+            return 0
+        fi
+    fi
+    return 1
+}
+
+do_kill_process() {
+    cd $WORKDIR
+    source ./mtp_config
+
+    if is_port_open $port; then
+        echo "检测到端口 $port 被占用, 准备杀死进程!"
+        kill_process_by_port $port
+    fi
+    
+    if is_port_open $web_port; then
+        echo "检测到端口 $web_port 被占用, 准备杀死进程!"
+        kill_process_by_port $web_port
+    fi
+}
 
 function get_run_command(){
   cd $WORKDIR
@@ -193,6 +217,40 @@ function get_run_command(){
   fi
 }
 
+do_kill_process() {
+    cd $WORKDIR
+    source ./mtp_config
+
+    if is_port_open $port; then
+        echo "检测到端口 $port 被占用, 准备杀死进程!"
+        kill_process_by_port $port
+    fi
+    
+    if is_port_open $web_port; then
+        echo "检测到端口 $web_port 被占用, 准备杀死进程!"
+        kill_process_by_port $web_port
+    fi
+}
+
+info_mtp() {
+    if [[ "$1" == "ingore" ]] || is_running_mtp; then
+        source ./mtp_config
+        public_ip=$(get_ip_public)
+
+        domain_hex=$(str_to_hex $domain)
+
+        client_secret="ee${secret}${domain_hex}"
+        echo -e "TMProxy+TLS代理: \033[32m运行中\033[0m"
+        echo -e "服务器IP：\033[31m$public_ip\033[0m"
+        echo -e "服务器端口：\033[31m$port\033[0m"
+        echo -e "MTProxy Secret:  \033[31m$client_secret\033[0m"
+        echo -e "TG一键链接: https://t.me/proxy?server=${public_ip}&port=${port}&secret=${client_secret}"
+        echo -e "TG一键链接: tg://proxy?server=${public_ip}&port=${port}&secret=${client_secret}"
+    else
+        echo -e "TMProxy+TLS代理: \033[33m已停止\033[0m"
+    fi
+}
+
 run_mtp() {
     cd $WORKDIR
 
@@ -200,8 +258,6 @@ run_mtp() {
         echo -e "提醒：\033[33mMTProxy已经运行，请勿重复运行!\033[0m"
     else
         do_kill_process
-        do_check_system_datetime_and_update
-
         local command=$(get_run_command)
         echo $command
         $command >/dev/null 2>&1 &
