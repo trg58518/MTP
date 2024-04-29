@@ -49,6 +49,27 @@ check_sys() {
     fi
 }
 
+function get_ip_public() {
+    public_ip=$(curl -s https://api.ip.sb/ip -A Mozilla --ipv4)
+    [ -z "$public_ip" ] && public_ip=$(curl -s ipinfo.io/ip -A Mozilla --ipv4)
+    echo $public_ip
+}
+
+function get_local_ip(){
+  ip a | grep inet | grep 127.0.0.1 > /dev/null 2>&1
+  if [[ $? -eq 1 ]];then
+    echo $(get_ip_private)
+  else
+    echo "127.0.0.1"
+  fi
+}
+
+function str_to_hex() {
+    string=$1
+    hex=$(printf "%s" "$string" | od -An -tx1 | tr -d ' \n')
+    echo $hex
+}
+
 do_install_basic_dep() {
     if check_sys packageManager yum; then
         yum install -y iproute curl wget procps-ng.x86_64 net-tools ntp
@@ -57,6 +78,16 @@ do_install_basic_dep() {
     fi
 
     return 0
+}
+
+function is_pid_exists() {
+    # check_ps_not_install_to_install
+    local exists=$(ps aux | awk '{print $2}' | grep -w $1)
+    if [[ ! $exists ]]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 function gen_rand_hex() {
@@ -232,26 +263,7 @@ do_kill_process() {
     fi
 }
 
-function get_ip_public() {
-    public_ip=$(curl -s https://api.ip.sb/ip -A Mozilla --ipv4)
-    [ -z "$public_ip" ] && public_ip=$(curl -s ipinfo.io/ip -A Mozilla --ipv4)
-    echo $public_ip
-}
 
-function get_local_ip(){
-  ip a | grep inet | grep 127.0.0.1 > /dev/null 2>&1
-  if [[ $? -eq 1 ]];then
-    echo $(get_ip_private)
-  else
-    echo "127.0.0.1"
-  fi
-}
-
-function str_to_hex() {
-    string=$1
-    hex=$(printf "%s" "$string" | od -An -tx1 | tr -d ' \n')
-    echo $hex
-}
 
 info_mtp() {
     if [[ "$1" == "ingore" ]] || is_running_mtp; then
