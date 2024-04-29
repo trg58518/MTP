@@ -148,6 +148,20 @@ provider=${input_provider}
 EOF
 
 }
+function get_pids_by_port() {
+    echo $(netstat -tulpn 2>/dev/null | grep ":$1 " | awk '{print $7}' | sed 's|/.*||')
+}
+
+function is_port_open() {
+    pids=$(get_pids_by_port $1)
+
+    if [ -n "$pids" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function get_architecture() {
     local architecture=""
     case $(uname -m) in
@@ -248,6 +262,13 @@ function get_run_command(){
   fi
 }
 
+function kill_process_by_port() {
+    pids=$(get_pids_by_port $1)
+    if [ -n "$pids" ]; then
+        kill -9 $pids
+    fi
+}
+
 do_kill_process() {
     cd $WORKDIR
     source ./mtp_config
@@ -256,11 +277,7 @@ do_kill_process() {
         echo "检测到端口 $port 被占用, 准备杀死进程!"
         kill_process_by_port $port
     fi
-    
-    if is_port_open $web_port; then
-        echo "检测到端口 $web_port 被占用, 准备杀死进程!"
-        kill_process_by_port $web_port
-    fi
+
 }
 
 
