@@ -122,8 +122,7 @@ do_config_mtp(){
 	
 	while true; do
         default_tag=""
-        echo -e "请输入你需要推广的TAG："
-        read -p "(留空则跳过):" input_tag
+        read -p "请输入你需要推广的TAG：:" input_tag
         [ -z "${input_tag}" ] && input_tag=${default_tag}
         if [ -z "$input_tag" ] || [[ "$input_tag" =~ ^[A-Za-z0-9]{32}$ ]]; then
             echo
@@ -320,13 +319,20 @@ run_mtp() {
 
 Start() {
 	while true;do
+		if is_running_mtp; then
+			info_mtp
+		fi
 		_input=0
-		echo "1. 自动一键安装"
+		echo "1. 一键安装"
+		#echo "2. 启动服务"
+		#echo "3. 重启服务"
+		#echo "4. 停止服务"
+		#echo "5. 卸载服务"
+		#echo "6. 开机启动"
 		echo "8. 退出"
 		read -p "(请选择您需要的操作:" input_provider
 
 		if [ ${input_provider} == 1 ]; then
-			echo $input_provider
 			do_install_basic_dep
 			do_config_mtp
 			do_install
