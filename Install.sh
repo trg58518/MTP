@@ -297,6 +297,7 @@ info_mtp() {
         echo -e "服务器IP：\033[31m$public_ip\033[0m"
         echo -e "服务器端口：\033[31m$port\033[0m"
         echo -e "MTProxy Secret:  \033[31m$client_secret\033[0m"
+		echo -e "proxy_tag:  \033[31m$proxy_tag\033[0m"
         echo -e "TG一键链接: https://t.me/proxy?server=${public_ip}&port=${port}&secret=${client_secret}"
         echo -e "TG一键链接: tg://proxy?server=${public_ip}&port=${port}&secret=${client_secret}"
 		if (("$is_New" > 0)); then
@@ -309,7 +310,7 @@ After=network.target
 [Service]
 Type=forking
 User=root
-ExecStart=/usr/mtproxy/mtg run ${client_secret} -b 0.0.0.0:${port} --multiplex-per-connection 500 --prefer-ip=ipv6 -t 127.0.0.1:8888 -4 ${public_ip}:${port}
+ExecStart=/usr/mtproxy/mtg run ${client_secret} ${proxy_tag} -b 0.0.0.0:${port} --multiplex-per-connection 500 --prefer-ip=ipv6 -t 127.0.0.1:8888 -4 ${public_ip}:${port}
 Restart=always
 DynamicUser=true
 AmbientCapabilities=CAP_NET_BIND_SERVICE
