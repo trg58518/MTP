@@ -429,17 +429,7 @@ Start() {
 			run_mtp
 			is_New=0
 		fi
-		
-		if [ ${input_provider} == 3 ]; then
-			echo "正在重启服务!"
-			stop_mtp
-			run_mtp
-		fi
-		if [ ${input_provider} == 4 ]; then
-			echo "正在停止服务!"
-			stop_mtp
-		fi
-		
+
 		if [ ${input_provider} == 8 ]; then
 			break
 		fi
