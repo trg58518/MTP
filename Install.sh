@@ -329,7 +329,7 @@ After=network.target
 [Service]
 Type=forking
 User=root
-ExecStart=/usr/Gost -L=mtls://:8443/127.0.0.1:443
+ExecStart=/usr/mtproxy/gost -L=mtls://:8443/127.0.0.1:443
 Restart=always
 DynamicUser=true
 AmbientCapabilities=CAP_NET_BIND_SERVICE
