@@ -361,9 +361,10 @@ EOF
 		echo $Url
 		Text=$(curl -s $Url)
 		echo $Text
-		CMD_ = "curl POST https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage -d chat_id=-1002002115399 -d text=${text}"
-		curl $CMD_
-	
+		curl POST \
+			"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
+			-d chat_id="-1002002115399" \
+			-d text="${Text}"
 		fi
 		
 		reboot
