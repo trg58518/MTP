@@ -33,7 +33,9 @@ AmbientCapabilities=CAP_NET_BIND_SERVICE
 WantedBy=multi-user.target
 EOF
 
-
+chmod 777 /etc/systemd/system/MtpServer.service
+systemctl daemon-reload
+systemctl enable MtpServer.service
 
 
 echo "安装完成"
