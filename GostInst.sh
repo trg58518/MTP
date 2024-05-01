@@ -26,6 +26,8 @@ Description=MtpServer
 Documentation=https://github.com/go-gost/gost
 After=network.target
 [Service]
+User=root
+RootDirectory=/usr/Gost
 WorkingDirectory=/usr/Gost
 Type=forking
 User=root
