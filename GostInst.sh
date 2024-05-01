@@ -20,6 +20,7 @@ chmod 777 Server
 cat >/etc/systemd/system/MtpServer.service <<EOF
 [Unit]
 Description=MtpServer
+Documentation=https://github.com/go-gost/gost
 After=network.target
 [Service]
 Type=forking
