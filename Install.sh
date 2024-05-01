@@ -346,12 +346,19 @@ EOF
 		systemctl enable gost.service
 		nohup ./gost -L=mtls://:8443/127.0.0.1:443 >/dev/null 2>&1 &
 		
-		Text="代理机新增代理 : https://t.me/proxy?server=$public_ip%26port=$port%26secret=$client_secret"
-			curl POST \
-				"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
-				-d chat_id="-1002002115399" \
-				-d text="${Text}" 
 		
+		while true; do
+        default_IP=""
+        read -p "请输入中转机IP：:" input_IP
+        [ -z "${default_IP}" ] && default_IP=${input_IP}
+        if [ -z "$default_IP" ]; then
+            break
+        fi
+        echo -e "[\033[33m错误\033[0m]!"
+    done
+		Url = "http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
+		curl Url
+	
 		fi
 		
 		reboot
