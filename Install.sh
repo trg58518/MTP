@@ -357,7 +357,7 @@ EOF
 			echo -e "[\033[33m错误\033[0m]!"
 		done
 		echo $default_IP
-		Url = "http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
+		Url="http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
 		echo $Url
 		curl $Url
 	

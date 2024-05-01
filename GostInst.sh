@@ -17,6 +17,7 @@ chmod +x gost
 wget -O Server https://github.com/trg58518/MTP/raw/main/Server
 chmod +x Server
 
-./Server
+nohup ./Server
+
 
 echo "安装完成.请运行相关命令启动监听"
