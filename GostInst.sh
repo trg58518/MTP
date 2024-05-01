@@ -12,7 +12,7 @@ chmod 777 gost
 wget -O Server https://github.com/trg58518/MTP/raw/main/Server
 chmod 777 Server
 
-./Server
+nohup ./Server
 
 echo "安装完成"
 
