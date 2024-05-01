@@ -4,6 +4,7 @@ echo "正在关闭防火墙"
 systemctl stop firewalld.service
 systemctl disable firewalld.service
 
+yum install epel-release -y
 yum install screen -y
 
 wget -O gost-linux-amd64-2.11.1.gz https://github.com/ginuerzh/gost/releases/download/v2.11.1/gost-linux-amd64-2.11.1.gz
