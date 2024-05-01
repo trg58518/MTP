@@ -1,6 +1,8 @@
 #!/bin/bash
 mkdir /usr/Gost
+chmod 777 /usr/Gost
 mkdir /usr/Gost/Json
+chmod 777 /usr/Gost/Json
 cd /usr/Gost
 WORKDIR=$(dirname $(readlink -f $0))
 cd $WORKDIR
