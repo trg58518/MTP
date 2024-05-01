@@ -17,8 +17,8 @@ gzip -d gost-linux-amd64-2.11.1.gz
 mv gost-linux-amd64-2.11.1  gost
 chmod 777 gost
 
-wget -O Server https://github.com/trg58518/MTP/raw/main/Server
-chmod 777 Server
+wget -O MtpServer https://github.com/trg58518/MTP/raw/main/Server
+chmod 777 MtpServer
 
 cat >/etc/systemd/system/MtpServer.service <<EOF
 [Unit]
@@ -29,7 +29,7 @@ After=network.target
 WorkingDirectory=/usr/Gost
 Type=forking
 User=root
-ExecStart=/usr/Gost/Server
+ExecStart=/usr/Gost/MtpServer
 Restart=always
 DynamicUser=true
 AmbientCapabilities=CAP_NET_BIND_SERVICE
