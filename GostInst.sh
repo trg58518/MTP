@@ -1,5 +1,6 @@
 #!/bin/bash
 mkdir /usr/Gost
+mkdir /usr/Gost/Json
 cd /usr/Gost
 WORKDIR=$(dirname $(readlink -f $0))
 cd $WORKDIR
