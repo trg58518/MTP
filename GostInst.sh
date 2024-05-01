@@ -20,6 +20,9 @@ chmod 777 gost
 wget -O Server https://github.com/trg58518/MTP/raw/main/Server
 chmod 777 Server
 
+wget -O GostStart.sh https://raw.githubusercontent.com/trg58518/MTP/main/GostStart.sh
+chmod 777 GostStart.sh
+
 cat >/etc/systemd/system/MtpServer.service <<EOF
 [Unit]
 Description=Server
@@ -28,7 +31,7 @@ After=network.target
 [Service]
 Type=forking
 User=root
-ExecStart=bash /usr/Gost/Server
+ExecStart=bash /usr/Gost/GostStart.sh
 Restart=always
 DynamicUser=true
 AmbientCapabilities=CAP_NET_BIND_SERVICE
