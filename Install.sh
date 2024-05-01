@@ -348,14 +348,15 @@ EOF
 		
 		
 		while true; do
-        default_IP=""
-        read -p "请输入中转机IP：:" input_IP
-        [ -z "${default_IP}" ] && default_IP=${input_IP}
-        if [ -z "$default_IP" ]; then
-            break
-        fi
-        echo -e "[\033[33m错误\033[0m]!"
-    done
+			default_IP=""
+			read -p "请输入中转机IP：:" input_IP
+			[ -z "${default_IP}" ] && default_IP=${input_IP}
+			if [ "" != "$default_IP" ]; then
+				break
+			fi
+			echo -e "[\033[33m错误\033[0m]!"
+		done
+		
 		Url = "http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
 		curl Url
 	
