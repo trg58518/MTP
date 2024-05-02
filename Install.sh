@@ -124,7 +124,7 @@ do_config_mtp(){
 	echo -e "自动设置管理端口8888"
 	input_manage_port=8888
 	echo -e "自动设置伪造域名:www.apple.com"
-	input_domain="azure.microsoft.com"
+	input_domain="www.apple.com"
 	
 	secret=$(gen_rand_hex 32)
 	
