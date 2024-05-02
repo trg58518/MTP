@@ -301,6 +301,7 @@ info_mtp() {
         echo -e "TMProxy+TLS代理: \033[32m运行中\033[0m"
         echo -e "服务器IP：\033[31m$public_ip\033[0m"
         echo -e "服务器端口：\033[31m$port\033[0m"
+		echo -e "密钥:  \033[31m$secret\033[0m"
         echo -e "MTProxy Secret:  \033[31m$client_secret\033[0m"
 		echo -e "proxy_tag:  \033[31m$proxy_tag\033[0m"
         echo -e "TG一键链接: https://t.me/proxy?server=${public_ip}&port=${port}&secret=${client_secret}"
