@@ -123,7 +123,7 @@ do_config_mtp(){
 	input_port=443
 	echo -e "自动设置管理端口8888"
 	input_manage_port=8888
-	echo -e "自动设置伪造域名:github.com"
+	echo -e "自动设置伪造域名:www.apple.com"
 	input_domain="azure.microsoft.com"
 	
 	secret=$(gen_rand_hex 32)
