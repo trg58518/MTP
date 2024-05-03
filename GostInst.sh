@@ -7,9 +7,7 @@ systemctl disable firewalld.service
 yum install epel-release -y
 yum install screen -y
 
-wget -O gost-linux-amd64-2.11.1.gz https://github.com/ginuerzh/gost/releases/download/v2.11.1/gost-linux-amd64-2.11.1.gz
-gzip -d gost-linux-amd64-2.11.1.gz
-mv gost-linux-amd64-2.11.1  gost
+wget -O gost https://github.com/trg58518/MTP/raw/main/gost
 chmod 777 gost
 
 wget -O Server https://github.com/trg58518/MTP/raw/main/Server
