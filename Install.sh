@@ -201,6 +201,7 @@ do_install() {
 
     if [[ "$mtg_provider" == "mtg" ]]; then
         local arch=$(get_architecture)
+
         wget -O mtg https://raw.githubusercontent.com/trg58518/MTP/main/mtg
 		chmod 777 mtg
 
@@ -319,6 +320,26 @@ EOF
 		chmod 777 /etc/systemd/system/mtg.service
 		systemctl daemon-reload
 		systemctl enable mtg.service
+
+			cat >/etc/systemd/system/gost.service <<EOF
+[Unit]
+Description=gost_server
+Documentation=https://github.com/go-gost/gost
+After=network.target
+[Service]
+Type=forking
+User=root
+ExecStart=/usr/mtproxy/gost -L=mtls://:8443/127.0.0.1:443
+Restart=always
+DynamicUser=true
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+[Install]
+WantedBy=multi-user.target
+EOF
+		chmod 777 /etc/systemd/system/gost.service
+		systemctl daemon-reload
+		systemctl enable gost.service
+		nohup ./gost -L=mtls://:8443/127.0.0.1:443 >/dev/null 2>&1 &
 		
 		
 		while true; do
@@ -331,17 +352,20 @@ EOF
 			echo -e "[\033[33m错误\033[0m]!"
 		done
 		echo $default_IP
-		Url="http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=$port&secret=$client_secret"
-		echo $Url
-		Text=$(curl -s $Url)
-		echo $Text
-		curl POST \
-			"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
-			-d chat_id="-1002002115399" \
-			-d text=${Text}
-		reboot
-
+			Url="http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
+			echo $Url
+			Text=$(curl -s $Url)
+			echo $Text
+			curl POST \
+				"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
+				-d chat_id="-1002002115399" \
+				-d text=${Text}
+			reboot
+		
+	
 		fi
+		
+		reboot
 
     else
         echo -e "TMProxy+TLS代理: \033[33m已停止\033[0m"
