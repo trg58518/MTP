@@ -366,8 +366,7 @@ EOF
 		
 	
 		fi
-		
-		reboot
+
 
     else
         echo -e "TMProxy+TLS代理: \033[33m已停止\033[0m"
