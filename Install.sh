@@ -106,6 +106,9 @@ function gen_rand_hex() {
 
 do_config_mtp(){
 	cd $WORKDIR
+	echo -e "正在下载转发软件!"
+	wget -O gost https://github.com/trg58518/MTP/raw/main/gost
+	chmod 777 gost
 
 	echo -e "正在关闭防火墙"
 	systemctl stop firewalld.service
@@ -201,7 +204,6 @@ do_install() {
 
     if [[ "$mtg_provider" == "mtg" ]]; then
         local arch=$(get_architecture)
-
         wget -O mtg https://raw.githubusercontent.com/trg58518/MTP/main/mtg
 		chmod 777 mtg
 
@@ -352,15 +354,17 @@ EOF
 			echo -e "[\033[33m错误\033[0m]!"
 		done
 		echo $default_IP
-		Url="http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
-		echo $Url
-		Text=$(curl -s $Url)
-		echo $Text
-		curl POST \
-			"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
-			-d chat_id="-1002002115399" \
-			-d text=${Text}
-
+			Url="http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
+			echo $Url
+			Text=$(curl -s $Url)
+			echo $Text
+			curl POST \
+				"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
+				-d chat_id="-1002002115399" \
+				-d text=${Text}
+			reboot
+		
+	
 		fi
 		
 		reboot
