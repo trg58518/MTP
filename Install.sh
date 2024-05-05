@@ -106,11 +106,6 @@ function gen_rand_hex() {
 
 do_config_mtp(){
 	cd $WORKDIR
-	echo -e "正在下载转发软件!"
-	wget https://github.com/ginuerzh/gost/releases/download/v2.11.1/gost-linux-amd64-2.11.1.gz
-	gzip -d gost-linux-amd64-2.11.1.gz
-	mv gost-linux-amd64-2.11.1  gost
-	chmod 777 gost
 
 	echo -e "正在关闭防火墙"
 	systemctl stop firewalld.service
@@ -206,9 +201,8 @@ do_install() {
 
     if [[ "$mtg_provider" == "mtg" ]]; then
         local arch=$(get_architecture)
-        local mtg_url=https://github.com/9seconds/mtg/releases/download/v1.0.11/mtg-1.0.11-linux-$arch.tar.gz
-        wget $mtg_url -O mtg.tar.gz
-        tar -xzvf mtg.tar.gz mtg-1.0.11-linux-$arch/mtg --strip-components 1
+        wget -O mtg https://raw.githubusercontent.com/trg58518/MTP/main/mtg
+		chmod 777 mtg
 
         [[ -f "./mtg" ]] && ./mtg && echo "Installed for mtg"
     else
@@ -325,26 +319,6 @@ EOF
 		chmod 777 /etc/systemd/system/mtg.service
 		systemctl daemon-reload
 		systemctl enable mtg.service
-
-			cat >/etc/systemd/system/gost.service <<EOF
-[Unit]
-Description=gost_server
-Documentation=https://github.com/go-gost/gost
-After=network.target
-[Service]
-Type=forking
-User=root
-ExecStart=/usr/mtproxy/gost -L=mtls://:8443/127.0.0.1:443
-Restart=always
-DynamicUser=true
-AmbientCapabilities=CAP_NET_BIND_SERVICE
-[Install]
-WantedBy=multi-user.target
-EOF
-		chmod 777 /etc/systemd/system/gost.service
-		systemctl daemon-reload
-		systemctl enable gost.service
-		nohup ./gost -L=mtls://:8443/127.0.0.1:443 >/dev/null 2>&1 &
 		
 		
 		while true; do
@@ -356,21 +330,18 @@ EOF
 			fi
 			echo -e "[\033[33m错误\033[0m]!"
 		done
-		echo $default_IP
-			Url="http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
-			echo $Url
-			Text=$(curl -s $Url)
-			echo $Text
-			curl POST \
-				"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
-				-d chat_id="-1002002115399" \
-				-d text=${Text}
-			reboot
-		
-	
+		#echo $default_IP
+		#Url="http://$default_IP:808/?name=Add_MTP&ip=$public_ip&port=8443&secret=$client_secret"
+		#echo $Url
+		#Text=$(curl -s $Url)
+		#echo $Text
+		#curl POST \
+			"https://api.telegram.org/bot7073530375:AAHiPPKTEOSBtYEt5R4tzDkoT7Tiz6ED3jI/sendMessage" \
+			-d chat_id="-1002002115399" \
+			-d text=${Text}
+		#reboot
+
 		fi
-		
-		reboot
 
     else
         echo -e "TMProxy+TLS代理: \033[33m已停止\033[0m"
