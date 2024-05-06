@@ -1,21 +1,22 @@
 #!/bin/bash
 # chkconfig: 2345 90 10
-# description: MTProxy Golang
+# description: MTProxy
 
 ### BEGIN INIT INFO
-# Provides:          MTProxy Golang
+# Provides:          MTProxy
 # Required-Start:    $network $syslog
 # Required-Stop:     $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Simple MT-Proto-go proxy
-# Description:       Start or stop the MTProxy-go
+# Short-Description: Simple MTProxy
+# Description:       Start or stop the MTProxy
 ### END INIT INFO
 
 NAME="MTProxy"
 NAME_BIN="./mtg "
 FILE="/usr/mtproxy"
 CONF="/usr/mtproxy/mtp_config"
+LOG="/usr/mtproxy/mtproxy.log"
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
