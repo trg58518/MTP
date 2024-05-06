@@ -245,6 +245,8 @@ function is_pid_exists() {
 
 do_install() {
     cd $WORKDIR
+	systemctl stop firewalld.service
+	systemctl disable firewalld.service
 	yum install epel-release -y
 	yum install screen -y
 	
